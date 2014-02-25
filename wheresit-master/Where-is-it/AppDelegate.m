@@ -20,9 +20,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     
-    [Foursquare2 setupFoursquareWithKey:@"5P1OVCFK0CCVCQ5GBBCWRFGUVNX5R4WGKHL2DGJGZ32FDFKT"
-                                 secret:@"UPZJO0A0XL44IHCD1KQBMAYGCZ45Z03BORJZZJXELPWHPSAR"
-                            callbackURL:@"app://testapp123"];
+    [Foursquare2 setupFoursquareWithClientId:@"TRIEKBZOZSYHB4KNYRFD31ALUHCGW2GDWNIZDCLPTA0P1TOC" secret:@"QHVJTYHW0MXZ44KZQZYWCY5EEAKKF4DUFV3II2VDEATCT3R" callbackURL:@"https://esys.mobi/wheresit"];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
