@@ -63,7 +63,7 @@
 @synthesize captureVideoPreviewLayer;
 @synthesize BNew, BPhoto,BPhotos,BPhotosPick,BPlaces,BShare;
 @synthesize topImageView, middleImageView, bottomImageView;
-
+@synthesize library;
 @synthesize imageView, image, imageSaved, location;
 @synthesize videoPreviewView;
 @synthesize InfoScroll;
@@ -85,6 +85,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.library=[[ALAssetsLibrary alloc] init];
     // Do any additional setup after loading the view from its nib.
     
     NSUserDefaults *usersDefaults = [NSUserDefaults standardUserDefaults];
@@ -436,7 +437,11 @@
 //        UIImage        *smallImage = UIGraphicsGetImageFromCurrentImageContext();
 //        
 //        UIGraphicsEndImageContext();
-        
+        [self.library saveImage:image toAlbum:@"Where Is It" withCompletionBlock:^(NSError *error) {
+            if (error!=nil) {
+                NSLog(@"Big error: %@", [error description]);
+            }
+        }];
         NSData *imageData = UIImagePNGRepresentation(image);
         NSError * error = nil;
         if(self.imageSaved == self.image){

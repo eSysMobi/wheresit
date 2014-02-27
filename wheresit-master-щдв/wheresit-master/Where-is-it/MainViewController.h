@@ -10,7 +10,7 @@
 #import "MobileCoreServices/MobileCoreServices.h"
 #import "MapKit/MapKit.h"
 #import "Foundation/Foundation.h"
-
+#import "ALAssetsLibrary+CustomPhotoAlbum.h"
 #import "MapViewAnnotation.h"
 #import <FacebookSDK/FacebookSDK.h>
 
@@ -27,7 +27,7 @@ UIActionSheetDelegate,
 UIScrollViewDelegate>
 
 @property (strong, nonatomic) UITabBarController *tabBarController;
-
+@property (strong, atomic) ALAssetsLibrary* library;
 
 @property (nonatomic,retain) UIImage *image;
 @property (nonatomic,retain) UIImage *imageSaved;

@@ -20,7 +20,7 @@
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>com.rior.shpory</string>
+	<string>esys.mobi.Where-s-it</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -36,18 +36,18 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb609281592426355</string>
+				<string>fb545997022164922</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1.1.2</string>
 	<key>FacebookAppID</key>
-	<string>609281592426355</string>
+	<string>545997022164922</string>
 	<key>FacebookBundleName</key>
 	<string>FacebookSDKOverrides</string>
 	<key>FacebookDisplayName</key>
-	<string>Where is it?</string>
+	<string>Where&apos;s it?</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIRequiredDeviceCapabilities</key>
