@@ -78,6 +78,7 @@
 		04E9E61B17D0701B0078BE53 /* top1.png in Resources */ = {isa = PBXBuildFile; fileRef = 04E9E61117D0701B0078BE53 /* top1.png */; };
 		04E9E61C17D0701B0078BE53 /* top2.png in Resources */ = {isa = PBXBuildFile; fileRef = 04E9E61217D0701B0078BE53 /* top2.png */; };
 		40C3247218BF52990016214A /* ALAssetsLibrary+CustomPhotoAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 40C3247118BF52990016214A /* ALAssetsLibrary+CustomPhotoAlbum.m */; };
+		40C3247418C094490016214A /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40C3247318C094490016214A /* ImageIO.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -175,6 +176,7 @@
 		04E9E61217D0701B0078BE53 /* top2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = top2.png; sourceTree = "<group>"; };
 		40C3247018BF52990016214A /* ALAssetsLibrary+CustomPhotoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALAssetsLibrary+CustomPhotoAlbum.h"; sourceTree = "<group>"; };
 		40C3247118BF52990016214A /* ALAssetsLibrary+CustomPhotoAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ALAssetsLibrary+CustomPhotoAlbum.m"; sourceTree = "<group>"; };
+		40C3247318C094490016214A /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,6 +192,7 @@
 				04024F4817A7DEF2001D4FDA /* CoreVideo.framework in Frameworks */,
 				04024F4917A7DEF2001D4FDA /* MapKit.framework in Frameworks */,
 				04024F3F17A7DEC0001D4FDA /* AssetsLibrary.framework in Frameworks */,
+				40C3247418C094490016214A /* ImageIO.framework in Frameworks */,
 				04024EBA17A7D88F001D4FDA /* UIKit.framework in Frameworks */,
 				04024EBC17A7D88F001D4FDA /* Foundation.framework in Frameworks */,
 				04024EBE17A7D88F001D4FDA /* CoreGraphics.framework in Frameworks */,
@@ -222,6 +225,7 @@
 		04024EB817A7D88F001D4FDA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				40C3247318C094490016214A /* ImageIO.framework */,
 				04024F5717A7EF14001D4FDA /* AddressBook.framework */,
 				04024F5517A7EEC3001D4FDA /* FBUserSettingsViewResources.bundle */,
 				04024F4A17A7E313001D4FDA /* MobileCoreServices.framework */,

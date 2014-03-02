@@ -17,7 +17,11 @@
 #import "FQViewController.h"
 #import "SelectPlacesViewController.h"
 #import "CollectionViewController.h"
-
+#import <AssetsLibrary/ALAsset.h>
+#import <AssetsLibrary/ALAssetRepresentation.h>
+#import <AssetsLibrary/ALAssetsGroup.h>
+#import <ImageIO/CGImageSource.h>
+#import <ImageIO/CGImageProperties.h>
 @interface MainViewController (){
     @private AppDelegate* appDel;
     NSMutableArray* infos;
@@ -119,6 +123,7 @@
     [super viewDidUnload];
 }
 @end
+
 //=================================================================================
 @implementation MainViewController (InternalMethods)
 -(void) selectFirstPlace{
@@ -211,6 +216,79 @@
     else
         self.shareText = [NSString stringWithFormat: @"I'M HERE\n%fN %fE",location.coordinate.latitude, location.coordinate.longitude];
 }
+
+
+//========================================================= load image from album
+-(void)loadNewLibraryImages
+{
+    self.assetGroups = [[NSMutableArray alloc] init];
+    // Group enumerator Block
+    dispatch_async(dispatch_get_main_queue(), ^
+                   {
+                       void (^assetGroupEnumerator)(struct ALAssetsGroup *, BOOL *) = (^ALAssetsGroup *group, BOOL *stop)
+                    
+                       {
+                           if (group == nil)
+                           {
+                               return;
+                           }
+                           if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:@"YOUR ALBUM NAME"]) {
+                               [self.assetGroups addObject:group];
+                               [self loadImages];
+                               return;
+                           }
+                           
+                           if (stop) {
+                               return;
+                           }
+                           
+                       };
+                       
+                       // Group Enumerator Failure Block
+                       void (^assetGroupEnumberatorFailure)(NSError *) = ^(NSError *error) {
+                           
+                           UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"ERROR" message:[NSString stringWithFormat:@"No Albums Available"] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+                           [alert show];
+
+                       };
+                       
+                       // Enumerate Albums
+                       ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+                       [library enumerateGroupsWithTypes:ALAssetsGroupAll
+                                              usingBlock:assetGroupEnumerator
+                                            failureBlock:assetGroupEnumberatorFailure];
+                       
+                       
+                   });
+    
+    
+}
+
+-(void)loadImages
+{
+    //for (ALAssetsGroup *assetGroup in self.assetGroups) {
+    //  for (int i = 0; i<[self.assetGroups count]; i++) {
+    
+    ALAssetsGroup *assetGroup = [self.assetGroups objectAtIndex:0];
+    NSLog(@"ALBUM NAME:;%@",[assetGroup valueForProperty:ALAssetsGroupPropertyName]);
+    
+    [assetGroup enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop)
+     {
+         if(result == nil)
+         {
+             return;
+         }
+         UIImage *img = [UIImage imageWithCGImage:[[result defaultRepresentation] fullScreenImage] scale:1.0 orientation:(UIImageOrientation)[[result valueForProperty:@"ALAssetPropertyOrientation"] intValue]];
+         
+     }];  
+    
+    //  }
+}
+
+
+
+
+
 -(void) cameraInit{
     self.imageView.hidden = YES;
     
