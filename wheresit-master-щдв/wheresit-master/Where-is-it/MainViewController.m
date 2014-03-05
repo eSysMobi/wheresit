@@ -22,6 +22,11 @@
 #import <AssetsLibrary/ALAssetsGroup.h>
 #import <ImageIO/CGImageSource.h>
 #import <ImageIO/CGImageProperties.h>
+#import <ImageIO/CGImageSource.h>
+#import <ImageIO/CGImageProperties.h>
+#import <CoreFoundation/CoreFoundation.h>
+#import <AssetsLibrary/ALAssetsLibrary.h>
+#import <ImageIO/ImageIO.h>
 @interface MainViewController (){
     @private AppDelegate* appDel;
     NSMutableArray* infos;
@@ -218,72 +223,72 @@
 }
 
 
-//========================================================= load image from album
--(void)loadNewLibraryImages
-{
-    self.assetGroups = [[NSMutableArray alloc] init];
-    // Group enumerator Block
-    dispatch_async(dispatch_get_main_queue(), ^
-                   {
-                       void (^assetGroupEnumerator)(struct ALAssetsGroup *, BOOL *) = (^ALAssetsGroup *group, BOOL *stop)
-                    
-                       {
-                           if (group == nil)
-                           {
-                               return;
-                           }
-                           if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:@"YOUR ALBUM NAME"]) {
-                               [self.assetGroups addObject:group];
-                               [self loadImages];
-                               return;
-                           }
-                           
-                           if (stop) {
-                               return;
-                           }
-                           
-                       };
-                       
-                       // Group Enumerator Failure Block
-                       void (^assetGroupEnumberatorFailure)(NSError *) = ^(NSError *error) {
-                           
-                           UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"ERROR" message:[NSString stringWithFormat:@"No Albums Available"] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-                           [alert show];
-
-                       };
-                       
-                       // Enumerate Albums
-                       ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-                       [library enumerateGroupsWithTypes:ALAssetsGroupAll
-                                              usingBlock:assetGroupEnumerator
-                                            failureBlock:assetGroupEnumberatorFailure];
-                       
-                       
-                   });
-    
-    
-}
-
--(void)loadImages
-{
-    //for (ALAssetsGroup *assetGroup in self.assetGroups) {
-    //  for (int i = 0; i<[self.assetGroups count]; i++) {
-    
-    ALAssetsGroup *assetGroup = [self.assetGroups objectAtIndex:0];
-    NSLog(@"ALBUM NAME:;%@",[assetGroup valueForProperty:ALAssetsGroupPropertyName]);
-    
-    [assetGroup enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop)
-     {
-         if(result == nil)
-         {
-             return;
-         }
-         UIImage *img = [UIImage imageWithCGImage:[[result defaultRepresentation] fullScreenImage] scale:1.0 orientation:(UIImageOrientation)[[result valueForProperty:@"ALAssetPropertyOrientation"] intValue]];
-         
-     }];  
-    
-    //  }
-}
+////========================================================= load image from album
+//-(void)loadNewLibraryImages
+//{
+//    self.assetGroups = [[NSMutableArray alloc] init];
+//    // Group enumerator Block
+//    dispatch_async(dispatch_get_main_queue(), ^
+//                   {
+//                       void (^assetGroupEnumerator)(struct ALAssetsGroup *, BOOL *) = (^ALAssetsGroup *group, BOOL *stop)
+//                    
+//                       {
+//                           if (group == nil)
+//                           {
+//                               return;
+//                           }
+//                           if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:@"YOUR ALBUM NAME"]) {
+//                               [self.assetGroups addObject:group];
+//                               [self loadImages];
+//                               return;
+//                           }
+//                           
+//                           if (stop) {
+//                               return;
+//                           }
+//                           
+//                       };
+//                       
+//                       // Group Enumerator Failure Block
+//                       void (^assetGroupEnumberatorFailure)(NSError *) = ^(NSError *error) {
+//                           
+//                           UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"ERROR" message:[NSString stringWithFormat:@"No Albums Available"] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+//                           [alert show];
+//
+//                       };
+//                       
+//                       // Enumerate Albums
+//                       ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+//                       [library enumerateGroupsWithTypes:ALAssetsGroupAll
+//                                              usingBlock:assetGroupEnumerator
+//                                            failureBlock:assetGroupEnumberatorFailure];
+//                       
+//                       
+//                   });
+//    
+//    
+//}
+//
+//-(void)loadImages
+//{
+//    //for (ALAssetsGroup *assetGroup in self.assetGroups) {
+//    //  for (int i = 0; i<[self.assetGroups count]; i++) {
+//    
+//    ALAssetsGroup *assetGroup = [self.assetGroups objectAtIndex:0];
+//    NSLog(@"ALBUM NAME:;%@",[assetGroup valueForProperty:ALAssetsGroupPropertyName]);
+//    
+//    [assetGroup enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop)
+//     {
+//         if(result == nil)
+//         {
+//             return;
+//         }
+//         UIImage *img = [UIImage imageWithCGImage:[[result defaultRepresentation] fullScreenImage] scale:1.0 orientation:(UIImageOrientation)[[result valueForProperty:@"ALAssetPropertyOrientation"] intValue]];
+//         
+//     }];  
+//    
+//    //  }
+//}
 
 
 
@@ -515,13 +520,66 @@
 //        UIImage        *smallImage = UIGraphicsGetImageFromCurrentImageContext();
 //        
 //        UIGraphicsEndImageContext();
-        [self.library saveImage:image toAlbum:@"Where Is It" withCompletionBlock:^(NSError *error) {
-            if (error!=nil) {
-                NSLog(@"Big error: %@", [error description]);
+        CLLocationManager *manager1 = [[CLLocationManager alloc] init];
+        [manager1 startUpdatingLocation];
+        location=manager1.location;
+        // NSLog(@"%f  %f",location.coordinate.latitude,location.coordinate.longitude);
+        NSLog(@"loc=%@",location);
+        NSData *imageData = UIImagePNGRepresentation(image);
+        CLLocationDegrees exifLatitude  = location.coordinate.latitude;
+        CLLocationDegrees exifLongitude = location.coordinate.longitude;
+        NSError * error = nil;
+        NSString *latRef;
+        NSString *lngRef;
+        if (exifLatitude < 0.0) {
+            exifLatitude = exifLatitude * -1.0f;
+            latRef = @"S";
+        }
+        else {
+            latRef = @"N";
+        }
+        if (exifLongitude < 0.0) {
+            exifLongitude = exifLongitude * -1.0f;
+            lngRef = @"W";
+        }
+        else {
+            lngRef = @"E";
+        }
+        NSDictionary* locDict = [[NSDictionary alloc] initWithObjectsAndKeys:
+                                 location.timestamp, (NSString*)kCGImagePropertyGPSTimeStamp,
+                                 latRef, (NSString*)kCGImagePropertyGPSLatitudeRef,
+                                 [NSNumber numberWithFloat:exifLatitude], (NSString*)kCGImagePropertyGPSLatitude,
+                                 lngRef, (NSString*)kCGImagePropertyGPSLongitudeRef,
+                                 [NSNumber numberWithFloat:exifLongitude], (NSString*)kCGImagePropertyGPSLongitude,
+                                 nil];
+        NSMutableDictionary *metadata = [[NSMutableDictionary alloc] init];
+        [metadata setObject:locDict forKey:(NSString*)kCGImagePropertyGPSDictionary];
+        [library writeImageDataToSavedPhotosAlbum:imageData metadata:metadata completionBlock:^(NSURL *assetURL, NSError *error){
+            if (error) {
+                // TODO: error handling
+            } else {
+                // TODO: success handling
             }
         }];
-        NSData *imageData = UIImagePNGRepresentation(image);
-        NSError * error = nil;
+        NSLog(@"metadata=%@",metadata);
+        NSMutableData *dest_data = [NSMutableData data];
+        CGImageSourceRef  source = CGImageSourceCreateWithData((__bridge CFDataRef)imageData, NULL);
+        if (!source)
+        {
+            NSLog(@"***Could not create image source ***");
+        }
+        CFStringRef UTI = CGImageSourceGetType(source);
+        CGImageDestinationRef destination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)dest_data,UTI,1,NULL);
+        if(!destination) {
+            NSLog(@"***Could not create image destination ***");
+        }
+        CGImageDestinationAddImageFromSource(destination,source,0, (__bridge CFDictionaryRef) metadata);
+        BOOL success = NO;
+        success = CGImageDestinationFinalize(destination);
+        if(!success) {
+            NSLog(@"***Could not create data from image destination ***");
+        }
+        [self.library saveImage:[UIImage imageWithData:dest_data] toAlbum:@"Test" withCompletionBlock:^(NSError *error) {         if (error!=nil)          {             NSLog(@"Big error: %@", [error description]);         }     }];
         if(self.imageSaved == self.image){
 //            int indx = ([filelist count])/2;
 //            if(indx == 6)
