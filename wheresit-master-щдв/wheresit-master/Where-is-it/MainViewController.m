@@ -748,36 +748,45 @@
 ///get latest photo
 
 // Enumerate just the photos and videos group by using ALAssetsGroupSavedPhotos.
-[library enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-    
-    // Within the group enumeration block, filter to enumerate just photos.
-    [group setAssetsFilter:[ALAssetsFilter allPhotos]];
-    
+
+// Within the group enumeration block, filter to enumerate just photos.
+//Check that the group has more than one picture
+if ([group numberOfAssets] > 0) {
     // Chooses the photo at the last index
-    [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *alAsset, NSUInteger index, BOOL *innerStop) {
+    [group enumerateAssetsAtIndexes:[NSIndexSet indexSetWithIndex:([group numberOfAssets] - 1)] options:0 usingBlock:^(ALAsset *alAsset, NSUInteger index, BOOL *innerStop) {
         
         // The end of the enumeration is signaled by asset == nil.
         if (alAsset) {
             ALAssetRepresentation *representation = [alAsset defaultRepresentation];
             UIImage *latestPhoto = [UIImage imageWithCGImage:[representation fullScreenImage]];
             
-            // Stop the enumerations
-            *stop = YES; *innerStop = YES;
-            
-            // Do something interesting with the AV asset.
-            [self sendTweet:latestPhoto];
+            [self.libraryButton setImage:latestPhoto forState:UIControlStateNormal];
         }
     }];
-} failureBlock: ^(NSError *error) {
-    // Typically you should handle an error more gracefully than this.
-    NSLog(@"No groups");
-}];
-
-
-
-
-
-
+}
+else {
+    //Handle this special case
+}
+- (void)imagePickerController:(UIImagePickerController *)picker
+        didFinishPickingImage:(UIImage *)image
+                  editingInfo:(NSDictionary *)editingInfo
+{
+    
+    // Dismiss the image selection, hide the picker and
+    
+    //show the image view with the picked image
+    
+    [picker dismissModalViewControllerAnimated:YES];
+    //UIImage *newImage = image;
+    
+    
+}
+NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,     NSUserDomainMask, YES);
+NSString *documentsDirectory = [paths objectAtIndex:0];
+NSString *savedImagePath = [documentsDirectory stringByAppendingPathComponent:@"savedImage.png"];
+UIImage *image = imageView.image; // imageView is my image from camera
+NSData *imageData = UIImagePNGRepresentation(image);
+[imageData writeToFile:savedImagePath atomically:NO];
 
 
 
