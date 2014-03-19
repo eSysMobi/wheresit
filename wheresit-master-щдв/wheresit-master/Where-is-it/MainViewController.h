@@ -13,8 +13,8 @@
 #import "ALAssetsLibrary+CustomPhotoAlbum.h"
 #import "MapViewAnnotation.h"
 #import <FacebookSDK/FacebookSDK.h>
-
-@class AVCamCaptureManager, AVCamPreviewView, AVCaptureVideoPreviewLayer, PhotosViewController, SinglePhotoViewController, CollectionViewController;
+#import "Reachability.h"
+@class AVCamCaptureManager, AVCamPreviewView, AVCaptureVideoPreviewLayer, PhotosViewController, SinglePhotoViewController, CollectionViewController,Reachability;
 
 @interface MainViewController : UIViewController < FBLoginViewDelegate,
 UITableViewDataSource,
@@ -25,6 +25,9 @@ FBPlacePickerDelegate,
 CLLocationManagerDelegate,
 UIActionSheetDelegate,
 UIScrollViewDelegate>
+{
+    Reachability* internetReachable;
+    Reachability* hostReachable;}
 
 @property (strong, nonatomic) UITabBarController *tabBarController;
 @property (strong, atomic) ALAssetsLibrary* library;
@@ -70,5 +73,5 @@ UIScrollViewDelegate>
 - (IBAction)AOpenPhotos:(id)sender;
 - (IBAction)ATakeNewPhoto:(id)sender;
 - (IBAction)ASharePhoto:(id)sender;
-
+-(void) checkNetworkStatus:(NSNotification *)notice;
 @end
