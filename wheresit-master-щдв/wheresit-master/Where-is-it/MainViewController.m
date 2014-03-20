@@ -28,6 +28,7 @@
 #import <AssetsLibrary/ALAssetsLibrary.h>
 #import <ImageIO/ImageIO.h>
 #import "Reachability.h"
+#import <SystemConfiguration/SystemConfiguration.h>
 @interface MainViewController (){
     @private AppDelegate* appDel;
     NSMutableArray* infos;
@@ -95,7 +96,14 @@
 - (void)viewDidLoad
 {
     
-    
+    if ([ self  connected]) {
+        [self performSelectorInBackground:@selector(loadData) withObject:nil];}
+    else{
+        UIAlertView *aw=[[UIAlertView alloc] initWithTitle:@"Нет подключения" message:@"Проверьте соединение с интернетом" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [aw show];
+        BPlaces.enabled =NO;
+            }
+
     
 //    [self performSelector:@selector(check) withObject:nil];
 //    NSLog(@"%i=====",[self connected]);//на устройстве проверка на наличие/отсутствие интернета работает нормально
@@ -125,22 +133,16 @@
     [self setInfo];
     [self updateInfo];    
     [self cameraInit];
+    [self connected];
 //    [self selectFirstPlace];
 }
 
 
-- (BOOL)connected
-{
-    Reachability *reachability = [Reachability reachabilityForInternetConnection];
-    NetworkStatus networkStatus = [reachability currentReachabilityStatus];
-    return networkStatus != NotReachable;
-if (![self connected]) {
-    UIAlertView *aw=[[UIAlertView alloc] initWithTitle:@"Нет подключения" message:@"Проверьте соединение с интернетом" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [aw show];
-    BPlaces.hidden=YES;
-} else {
-    BPlaces.hidden=NO;
-}}
+-(BOOL)connected{
+    Reachability *reach = [Reachability reachabilityForInternetConnection];
+    NetworkStatus netstat = [reach currentReachabilityStatus];
+    return !(netstat==NotReachable);
+}
 
 -(void)viewDidAppear:(BOOL)animated{
     self.navigationController.navigationBarHidden = YES;

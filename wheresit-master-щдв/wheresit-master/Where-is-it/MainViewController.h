@@ -14,6 +14,7 @@
 #import "MapViewAnnotation.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import "Reachability.h"
+#import <SystemConfiguration/SystemConfiguration.h>  
 @class AVCamCaptureManager, AVCamPreviewView, AVCaptureVideoPreviewLayer, PhotosViewController, SinglePhotoViewController, CollectionViewController,Reachability;
 
 @interface MainViewController : UIViewController < FBLoginViewDelegate,
@@ -74,4 +75,5 @@ UIScrollViewDelegate>
 - (IBAction)ATakeNewPhoto:(id)sender;
 - (IBAction)ASharePhoto:(id)sender;
 -(void) checkNetworkStatus:(NSNotification *)notice;
+-(BOOL)connected;
 @end
