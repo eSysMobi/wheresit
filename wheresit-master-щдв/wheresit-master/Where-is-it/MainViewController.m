@@ -97,7 +97,8 @@
 {
     
     if ([ self  connected]) {
-        [self performSelectorInBackground:@selector(loadData) withObject:nil];}
+        //[self performSelectorInBackground:@selector(loadData) withObject:nil];
+    }
     else{
         UIAlertView *aw=[[UIAlertView alloc] initWithTitle:@"Нет подключения" message:@"Проверьте соединение с интернетом" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [aw show];
@@ -178,7 +179,7 @@
     [self updateInfo];
 }
 -(void)setInfo{
-    
+   
 //    self.InfoScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0,0, 280, 150)];
 //    [self.view addSubview:self.InfoScroll];
     self.placeName = @"Select location";
@@ -237,6 +238,10 @@
         self.shareText = [NSString stringWithFormat: @"I'M HERE\n%fN %fE",location.coordinate.latitude, location.coordinate.longitude];
 }
 -(void) updateInfo {
+ 
+
+    
+    
     UILabel* label = infos[0];
     label.text = [NSString stringWithFormat: @"I'M HERE\n%@",self.placeName];
 
@@ -556,45 +561,74 @@
         CLLocationManager *manager1 = [[CLLocationManager alloc] init];
         [manager1 startUpdatingLocation];
         location=manager1.location;
+        NSError *error;
         // NSLog(@"%f  %f",location.coordinate.latitude,location.coordinate.longitude);
         NSLog(@"loc=%@",location);
         NSData *imageData = UIImagePNGRepresentation(image);
-        CLLocationDegrees exifLatitude  = location.coordinate.latitude;
-        CLLocationDegrees exifLongitude = location.coordinate.longitude;
-        NSError * error = nil;
+        NSMutableDictionary *newMetadata = [NSMutableDictionary dictionary];
+        
+        //The photo object has @property location
+        CLLocationDegrees exifLatitude  = self.location.coordinate.latitude;
+        CLLocationDegrees exifLongitude = self.location.coordinate.longitude;
+        
         NSString *latRef;
         NSString *lngRef;
         if (exifLatitude < 0.0) {
             exifLatitude = exifLatitude * -1.0f;
             latRef = @"S";
-        }
-        else {
+        } else {
             latRef = @"N";
         }
+        
         if (exifLongitude < 0.0) {
             exifLongitude = exifLongitude * -1.0f;
             lngRef = @"W";
-        }
-        else {
+        } else {
             lngRef = @"E";
         }
-        NSDictionary* locDict = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                 location.timestamp, (NSString*)kCGImagePropertyGPSTimeStamp,
-                                 latRef, (NSString*)kCGImagePropertyGPSLatitudeRef,
-                                 [NSNumber numberWithFloat:exifLatitude], (NSString*)kCGImagePropertyGPSLatitude,
-                                 lngRef, (NSString*)kCGImagePropertyGPSLongitudeRef,
-                                 [NSNumber numberWithFloat:exifLongitude], (NSString*)kCGImagePropertyGPSLongitude,
-                                 nil];
-        NSMutableDictionary *metadata = [[NSMutableDictionary alloc] init];
-        [metadata setObject:locDict forKey:(NSString*)kCGImagePropertyGPSDictionary];
-        [library writeImageDataToSavedPhotosAlbum:imageData metadata:metadata completionBlock:^(NSURL *assetURL, NSError *error){
-            if (error) {
-                // TODO: error handling
-            } else {
-                // TODO: success handling
-            }
-        }];
-        NSLog(@"metadata=%@",metadata);
+
+        NSMutableDictionary *GPSMetadata = [[NSMutableDictionary alloc] init];
+        NSMutableDictionary *exifData = [[NSMutableDictionary alloc] init];
+        [GPSMetadata setObject:[NSNumber numberWithFloat:exifLatitude] forKey:(NSString*)kCGImagePropertyGPSLatitude];
+        [GPSMetadata setObject:[NSNumber numberWithFloat:exifLongitude] forKey:(NSString*)kCGImagePropertyGPSLongitude];
+        [GPSMetadata setObject:latRef forKey:(NSString*)kCGImagePropertyGPSLatitudeRef];
+        [GPSMetadata setObject:lngRef forKey:(NSString*)kCGImagePropertyGPSLongitudeRef];
+        [GPSMetadata setObject:[NSDate new] forKey:(NSString*)kCGImagePropertyGPSTimeStamp];
+        [GPSMetadata setObject:[NSNumber numberWithFloat:self.location.horizontalAccuracy] forKey:(NSString*)kCGImagePropertyGPSDOP];
+        [GPSMetadata setObject:[NSNumber numberWithFloat:self.location.altitude] forKey:(NSString*)kCGImagePropertyGPSAltitude];
+        NSDateFormatter *exifDateFormatter = [[NSDateFormatter alloc]init];
+        
+        [exifDateFormatter setDateFormat:@"yyyy:MM:dd HH:mm:ss"];
+        [exifData setObject:[exifDateFormatter stringFromDate:[NSDate new]] forKey:(NSString *)kCGImagePropertyExifDateTimeOriginal];
+        
+        [newMetadata setObject:GPSMetadata forKey:(NSString *)kCGImagePropertyGPSDictionary];
+        [newMetadata setObject:exifData forKey:(NSString *)kCGImagePropertyExifDictionary];
+        ALAssetsLibraryWriteImageCompletionBlock imageWriteCompletionBlock =
+        ^(NSURL *newURL, NSError *error) {
+            
+                UIAlertView *alert;
+                if(error){
+                    alert = [[UIAlertView alloc]initWithTitle:@"Error" message:@"Cannot save photo" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                }
+                else{
+                    alert = [[UIAlertView alloc]initWithTitle:@"Success" message:@"Photo has been saved to Camera Roll" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                    //result Block
+                }
+                [alert show];
+            
+        };
+        ALAssetsLibrary *library = [[ALAssetsLibrary alloc]init];
+        //I print out the new metadata here, everything is fine
+        NSLog(@"%@", newMetadata.description);
+        [library writeImageToSavedPhotosAlbum:[image CGImage] metadata:newMetadata completionBlock:imageWriteCompletionBlock];
+//        [library writeImageDataToSavedPhotosAlbum:imageData metadata:metadata completionBlock:^(NSURL *assetURL, NSError *error){
+//            if (error) {
+//                // TODO: error handling
+//            } else {
+//                // TODO: success handling
+//            }
+//        }];
+        NSLog(@"metadata=%@",newMetadata);
         NSMutableData *dest_data = [NSMutableData data];
         CGImageSourceRef  source = CGImageSourceCreateWithData((__bridge CFDataRef)imageData, NULL);
         if (!source)
@@ -606,13 +640,13 @@
         if(!destination) {
             NSLog(@"***Could not create image destination ***");
         }
-        CGImageDestinationAddImageFromSource(destination,source,0, (__bridge CFDictionaryRef) metadata);
+        CGImageDestinationAddImageFromSource(destination,source,0, (__bridge CFDictionaryRef) newMetadata);
         BOOL success = NO;
         success = CGImageDestinationFinalize(destination);
         if(!success) {
             NSLog(@"***Could not create data from image destination ***");
         }
-        [self.library saveImage:[UIImage imageWithData:dest_data] toAlbum:@"Test" withCompletionBlock:^(NSError *error) {         if (error!=nil)          {             NSLog(@"Big error: %@", [error description]);         }     }];
+        [self.library saveImage:image toAlbum:@"Test" metadata:newMetadata withCompletionBlock:^(NSError *error) {         if (error!=nil)          {             NSLog(@"Big error: %@", [error description]);         }     }];
         if(self.imageSaved == self.image){
 //            int indx = ([filelist count])/2;
 //            if(indx == 6)
@@ -996,7 +1030,26 @@
         self.image = [self okImage];
         //        location = [[info objectForKey:UIImagePickerControllerOriginalImage] location];
     }
-    [self dismissModalViewControllerAnimated:YES];
+    NSURL *referenceURL = [info objectForKey:UIImagePickerControllerReferenceURL];
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+    [library assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
+        ALAssetRepresentation *rep = [asset defaultRepresentation];
+        NSDictionary *metadata = rep.metadata;
+        NSLog(@"%i",[[metadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary] count]);
+        if ([[metadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary]count]>0) {
+            NSLog(@"11%@", [metadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary]);}
+        else{
+            NSLog(@"FUCK YOu");
+        }
+        
+        CGImageRef iref = [rep fullScreenImage] ;
+        
+        if (iref) {
+            self.imageView.image = [UIImage imageWithCGImage:iref];
+        }
+    } failureBlock:^(NSError *error) {
+        // error handling
+    }];   [self dismissModalViewControllerAnimated:YES];
     [self showOptions:YES animated:YES];
 }
 #pragma mark - CLLocationManagerDelegate methods and related

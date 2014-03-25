@@ -12,7 +12,7 @@ typedef void(^SaveImageCompletion)(NSError* error);
 
 @interface ALAssetsLibrary(CustomPhotoAlbum)
 
--(void)saveImage:(UIImage*)image toAlbum:(NSString*)albumName withCompletionBlock:(SaveImageCompletion)completionBlock;
+-(void)saveImage:(UIImage*)image toAlbum:(NSString*)albumName metadata:(NSDictionary *)metadata withCompletionBlock:(SaveImageCompletion)completionBlock;
 -(void)addAssetURL:(NSURL*)assetURL toAlbum:(NSString*)albumName withCompletionBlock:(SaveImageCompletion)completionBlock;
 
 @end

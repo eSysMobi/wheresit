@@ -9,11 +9,12 @@
 
 @implementation ALAssetsLibrary(CustomPhotoAlbum)
 
--(void)saveImage:(UIImage*)image toAlbum:(NSString*)albumName withCompletionBlock:(SaveImageCompletion)completionBlock
+-(void)saveImage:(UIImage*)image toAlbum:(NSString*)albumName metadata:(NSDictionary *)metadata withCompletionBlock:(SaveImageCompletion)completionBlock
 {
     //write the image data to the assets library (camera roll)
-    [self writeImageToSavedPhotosAlbum:image.CGImage orientation:(ALAssetOrientation)image.imageOrientation 
-                        completionBlock:^(NSURL* assetURL, NSError* error) {
+    [self writeImageToSavedPhotosAlbum:image.CGImage
+                              metadata:metadata
+                       completionBlock:^(NSURL* assetURL, NSError* error) {
                               
                           //error handling
                           if (error!=nil) {
