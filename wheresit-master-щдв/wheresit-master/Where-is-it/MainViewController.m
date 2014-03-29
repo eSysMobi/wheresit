@@ -189,21 +189,21 @@
     [manager0 startUpdatingLocation];
     location = manager0.location;
     
-    UILabel* lb1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.InfoScroll.frame.size.width, self.InfoScroll.frame.size.height)];
+    UILabel* lb1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 220, 620,60)];//self.InfoScroll.frame.size.width, self.InfoScroll.frame.size.height)];
     lb1.numberOfLines = 3;
     lb1.lineBreakMode = NSLineBreakByWordWrapping;
     lb1.textColor = [UIColor blackColor];
-    lb1.backgroundColor = [UIColor clearColor];
+    lb1.backgroundColor = [UIColor whiteColor];
     lb1.text = [NSString stringWithFormat:@"IM HERE\n %@ ",self.placeName];
 
     self.shareText =    lb1.text;
     [self.InfoScroll addSubview:lb1];
     
     
-    UILabel* lb2 = [[UILabel alloc] initWithFrame:CGRectMake(self.InfoScroll.frame.size.width, 0, self.InfoScroll.frame.size.width, self.InfoScroll.frame.size.height)];
+    UILabel* lb2 = [[UILabel alloc] initWithFrame:CGRectMake(290, 220, 620,60)];//self.InfoScroll.frame.size.width, 0, self.InfoScroll.frame.size.width, self.InfoScroll.frame.size.height)];
     lb2.numberOfLines = 3;
     lb2.lineBreakMode = NSLineBreakByWordWrapping;
-    lb2.backgroundColor = [UIColor clearColor];
+    lb2.backgroundColor = [UIColor whiteColor];
     lb2.textColor = [UIColor blackColor];
     NSLog(@"I'M HERE\n%fN %fE",location.coordinate.latitude, location.coordinate.longitude);
     
