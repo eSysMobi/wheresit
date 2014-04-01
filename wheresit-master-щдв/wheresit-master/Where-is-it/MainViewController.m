@@ -968,6 +968,7 @@
             self.imageView.hidden = YES;
         }
 }
+
 -(BOOL) startMediaBrowserFromViewController: (UIViewController*) controller usingDelegate: (id<UIImagePickerControllerDelegate, UINavigationControllerDelegate>) delegate{
     if(([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum] == NO) || delegate == nil || controller == nil)
         return NO;
@@ -983,13 +984,13 @@
     [self startMediaBrowserFromViewController:self usingDelegate:self];
 }
 - (IBAction)AOpenPhotos:(id)sender {
+   
     self.navigationController.navigationBarHidden = NO;
     singlePhotoViewController = [[CollectionViewController alloc] initWithNibName:@"CollectionViewController" bundle:nil];
 //    singlePhotoViewController.detailItem = 1;
 //    singlePhotoViewController.hidesBottomBarWhenPushed=YES;
     [self.navigationController pushViewController:singlePhotoViewController animated:YES];
 }
-
 - (IBAction)ATakeNewPhoto:(id)sender {
     [self showOptions:NO animated:YES];
 }
@@ -1039,7 +1040,7 @@
         if ([[metadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary]count]>0) {
             NSLog(@"11%@", [metadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary]);}
         else{
-            NSLog(@"FUCK YOu");
+            NSLog(@"YOU");
         }
         
         CGImageRef iref = [rep fullScreenImage] ;
@@ -1050,9 +1051,22 @@
     } failureBlock:^(NSError *error) {
         // error handling
     }];   [self dismissModalViewControllerAnimated:YES];
+//    UIAlertView *awiew=[[UIAlertView alloc] initWithTitle:@"Выберите координаты" message:@"Вы можете выбрать текущие координаты или координаты с фото" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Текущие",@"Фото"];
+    UIAlertView *awiew=[[UIAlertView alloc] initWithTitle:@"Выберите координаты" message:@"Вы можете выбрать текущие координаты или координаты фото" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Текущие",@"Фото",nil];
+    [awiew show];
+
     [self showOptions:YES animated:YES];
 }
+
 #pragma mark - CLLocationManagerDelegate methods and related
+- (void)alertView:(UIAlertView *)awiew clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) {
+        NSLog(@"%i",01-111);
+    } else if(buttonIndex == 1) {
+        NSLog(@"%i",02-222);
+    }
+}
 
 - (void)locationManager:(CLLocationManager *)manager
     didUpdateToLocation:(CLLocation *)newLocation
