@@ -1038,7 +1038,8 @@
         NSDictionary *metadata = rep.metadata;
         NSLog(@"%i",[[metadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary] count]);
         if ([[metadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary]count]>0) {
-            NSLog(@"11%@", [metadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary]);}
+            gpsdata=metadata;
+           }
         else{
             NSLog(@"YOU");
         }
@@ -1065,6 +1066,23 @@
         NSLog(@"%i",01-111);
     } else if(buttonIndex == 1) {
         NSLog(@"%i",02-222);
+        UILabel* lb2 = [[UILabel alloc] initWithFrame:CGRectMake(0, 220, 620,60)];//self.InfoScroll.frame.size.width, 0, self.InfoScroll.frame.size.width, self.InfoScroll.frame.size.height)];
+        lb2.numberOfLines = 3;
+        lb2.lineBreakMode = NSLineBreakByWordWrapping;
+        lb2.backgroundColor = [UIColor whiteColor];
+        lb2.textColor = [UIColor blackColor];
+        //NSLog(@"I'M HERE\n%fN %fE",location.coordinate.latitude, location.coordinate.longitude);
+        
+        lb2.text = [NSString stringWithFormat: @"I'M HERE\n%@N %@E",[[gpsdata objectForKey:(NSString *)kCGImagePropertyGPSDictionary] objectForKey:@"Latitude"], [[gpsdata objectForKey:(NSString *)kCGImagePropertyGPSDictionary] objectForKey:@"Longitude"]];
+        [self.InfoScroll addSubview:lb2];
+        [self.InfoScroll setContentSize:CGSizeMake(280, 50)];
+        self.InfoScroll.pagingEnabled = YES;
+        [self.InfoScroll setShowsHorizontalScrollIndicator:NO];
+        
+        infos = [[NSMutableArray alloc] init];
+        [infos addObject:lb2];
+
+         NSLog(@"11%@", [[gpsdata objectForKey:(NSString *)kCGImagePropertyGPSDictionary] objectForKey:@"Latitude"]);
     }
 }
 

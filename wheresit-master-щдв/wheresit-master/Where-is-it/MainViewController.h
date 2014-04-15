@@ -28,7 +28,8 @@ UIActionSheetDelegate,
 UIScrollViewDelegate>
 {
     Reachability* internetReachable;
-    Reachability* hostReachable;}
+    Reachability* hostReachable;
+    NSDictionary *gpsdata;}
 
 @property (strong, nonatomic) UITabBarController *tabBarController;
 @property (strong, atomic) ALAssetsLibrary* library;
