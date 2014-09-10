@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">WhereIsIt3</string>
+    <string name="waiting_for_photo">Подождите идёт обработка фотографии</string>
+    <string name="route_failure">Не удалось проложить маршрут</string>
+    <string name="route_success">Маршрут проложен</string>
+    <string name="enable_provider">Включите сеть или GPS для определения координат</string>
+    <string name="not_empty_geotag">Геоданные данной фотографии не пусты. Переписать? В случае отказа будут обрабатываться имеющиеся геоданные</string>
+    <string name="app_id">545997022164922</string>
+
+</resources>
